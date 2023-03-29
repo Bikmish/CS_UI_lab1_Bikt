@@ -67,7 +67,7 @@ namespace ClassLibrary
             }
             return success;
         }
-        public static bool Load(string filename, RawData rd) //out???
+        public static bool Load(string filename, RawData rd)
         {
             (FileStream stream, StreamReader reader, bool success) = (null, null, true);
             try
