@@ -13,14 +13,13 @@ namespace WPF_UI
         //for RawData initialization
         public string Ends { get; set; }
         public string NmNodes { get; set; }
-        public string NmSplineNodes { get; set; }
         public string SelectedFunc { get; set; }
-        public string LDer { get; set; }
-        public string RDer { get; set; }
         public bool IsUniform { get; set; }
 
         //for SplineData initialization
-        public double[] EdgeDerivs { get; set; }
+        public string LDer { get; set; }
+        public string RDer { get; set; }
+        public string NmSplineNodes { get; set; }
         public RawData? rd;
         public SplineData? sd;
         public ViewData() { }
