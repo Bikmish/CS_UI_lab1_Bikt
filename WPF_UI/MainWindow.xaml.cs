@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Text.RegularExpressions;
 using ClassLibrary;
+using System.Globalization;
 
 namespace WPF_UI
 {
@@ -36,18 +37,13 @@ namespace WPF_UI
 
         private void execControls_Click(object sender, RoutedEventArgs e)
         {
-            var intBordersReg = Regex.Matches(vData.Ends??"", @"[0-9]+(\.[0-9]+)?");
-            var numNodesReg = Regex.Matches(vData.NmNodes??"", @"-?\d+");
-            var numSplineNodesReg = Regex.Matches(vData.NmSplineNodes??"", @"-?\d+");
-            var leftDerReg = Regex.Matches(vData.LDer??"", @"-?\d+");
-            var rightDerReg = Regex.Matches(vData.RDer??"", @"-?\d+");
             FRaw Func = (vData.SelectedFunc??"") == FRawEnum.Linear.ToString() ? RawData.f1 : (vData.SelectedFunc??"") == FRawEnum.Cubic.ToString() ? RawData.f2 : RawData.f3;
-            if (intBordersReg.Count != 2 || numNodesReg.Count != 1 || numSplineNodesReg.Count != 1 || leftDerReg.Count != 1 || rightDerReg.Count != 1)
+            if (vData.Ends == null || vData.NmNodes == null || vData.NmSplineNodes == null || vData.LDer == null || vData.RDer == null)
                 MessageBox.Show("Enter correct contorls!");
             else 
             {
-                vData.rd = new RawData(new double[] { Double.Parse(intBordersReg[0].Value), Double.Parse(intBordersReg[1].Value) }, Int32.Parse(numNodesReg[0].Value), vData.IsUniform, Func);
-                vData.sd = new SplineData(vData.rd, new double[] { Double.Parse(leftDerReg[0].Value), Double.Parse(rightDerReg[0].Value) }, Int32.Parse(numSplineNodesReg[0].Value));
+                vData.rd = new RawData(vData.Ends, (int)vData.NmNodes, vData.IsUniform, Func);
+                vData.sd = new SplineData(vData.rd, new double[] { (double)vData.LDer, (double)vData.RDer }, (int)vData.NmSplineNodes);
                 vData.sd.Interpolate();
                 SetBindings();
             }
@@ -81,14 +77,11 @@ namespace WPF_UI
             if ((bool)dlg.ShowDialog())
             {
                 vData.Load(dlg.FileName);
-                var numSplineNodesReg = Regex.Matches(vData.NmSplineNodes ?? "", @"-?\d+");
-                var leftDerReg = Regex.Matches(vData.LDer ?? "", @"-?\d+");
-                var rightDerReg = Regex.Matches(vData.RDer ?? "", @"-?\d+");
-                if (numSplineNodesReg.Count != 1 || leftDerReg.Count != 1 || rightDerReg.Count != 1)
+                if (vData.NmSplineNodes == null || vData.LDer == null || vData.RDer == null)
                     MessageBox.Show("Enter correct contorls!");
                 else
                 {
-                    vData.sd = new SplineData(vData.rd, new double[] { Convert.ToDouble(leftDerReg[0].Value), Convert.ToDouble(rightDerReg[0].Value) }, Convert.ToInt32(numSplineNodesReg[0].Value));
+                    vData.sd = new SplineData(vData.rd, new double[] { (double)vData.LDer, (double)vData.RDer }, (int)vData.NmSplineNodes);
                     vData.sd.Interpolate();
                     SetBindings();
                 }
@@ -97,17 +90,26 @@ namespace WPF_UI
 
         private void intBorders_val_Initialized(object sender, EventArgs e)
         {
-            intBorders_val.SetBinding(TextBox.TextProperty, new Binding("vData.Ends"));
+            var binding = new Binding("vData.Ends");
+            binding.Mode = BindingMode.OneWayToSource;
+            binding.Converter = new RegexConverter(@"[0-9]+(\.[0-9]+)?", 2);
+            intBorders_val.SetBinding(TextBox.TextProperty, binding);
         }
 
         private void numNodes_val_Initialized(object sender, EventArgs e)
         {
-            numNodes_val.SetBinding(TextBox.TextProperty, new Binding("vData.NmNodes"));
+            var binding = new Binding("vData.NmNodes");
+            binding.Mode = BindingMode.OneWayToSource;
+            binding.Converter = new RegexConverter(@"-?\d+", 1);
+            numNodes_val.SetBinding(TextBox.TextProperty, binding);
         }
 
         private void numSplineNodes_val_Initialized(object sender, EventArgs e)
         {
-            numSplineNodes_val.SetBinding(TextBox.TextProperty, new Binding("vData.NmSplineNodes"));
+            var binding = new Binding("vData.NmSplineNodes");
+            binding.Mode = BindingMode.OneWayToSource;
+            binding.Converter = new RegexConverter(@"-?\d+", 1);
+            numSplineNodes_val.SetBinding(TextBox.TextProperty, binding);
         }
 
         private void rbUni_Initialized(object sender, EventArgs e)
@@ -122,12 +124,34 @@ namespace WPF_UI
 
         private void leftDer_val_Initialized(object sender, EventArgs e)
         {
-            leftDer_val.SetBinding(TextBox.TextProperty, new Binding("vData.LDer"));
+            var binding = new Binding("vData.LDer");
+            binding.Mode = BindingMode.OneWayToSource;
+            binding.Converter = new RegexConverter(@"[0-9]+(\.[0-9]+)?", 1);
+            leftDer_val.SetBinding(TextBox.TextProperty, binding);
         }
 
         private void rightDer_val_Initialized(object sender, EventArgs e)
         {
-            rightDer_val.SetBinding(TextBox.TextProperty, new Binding("vData.RDer"));
+            var binding = new Binding("vData.RDer");
+            binding.Mode = BindingMode.OneWayToSource;
+            binding.Converter = new RegexConverter(@"[0-9]+(\.[0-9]+)?", 1);
+            rightDer_val.SetBinding(TextBox.TextProperty, binding);
+        }
+    }
+    public class RegexConverter : IValueConverter
+    {
+        public string Format;
+        public int Num;
+        public RegexConverter(string format, int num) => (Format, Num) = (format, num);
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return "";
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var reg = Regex.Matches((string)value ?? "-1", Format);
+            return reg?.Count != Num ? null : Num == 1 ? Double.Parse(reg[0].Value) : new double[] { Double.Parse(reg[0].Value), Double.Parse(reg[1].Value) };
         }
     }
 }

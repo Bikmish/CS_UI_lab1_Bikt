@@ -11,15 +11,15 @@ namespace WPF_UI
     public class ViewData
     {
         //for RawData initialization
-        public string Ends { get; set; }
-        public string NmNodes { get; set; }
+        public double[] Ends { get; set; }
+        public int? NmNodes { get; set; }
         public string SelectedFunc { get; set; }
         public bool IsUniform { get; set; }
 
         //for SplineData initialization
-        public string LDer { get; set; }
-        public string RDer { get; set; }
-        public string NmSplineNodes { get; set; }
+        public double? LDer { get; set; }
+        public double? RDer { get; set; }
+        public int? NmSplineNodes { get; set; }
         public RawData? rd;
         public SplineData? sd;
         public ViewData() { }
