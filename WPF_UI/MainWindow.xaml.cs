@@ -13,8 +13,11 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Text.RegularExpressions;
+using OxyPlot;
 using ClassLibrary;
 using System.Globalization;
+using OxyPlot.Series;
+using OxyPlot.Legends;
 
 namespace WPF_UI
 {
@@ -52,6 +55,7 @@ namespace WPF_UI
                 vData.sd = new SplineData(vData.rd, new double[] { (double)vData.LDer, (double)vData.RDer }, (int)vData.NmSplineNodes);
                 vData.sd.Interpolate();
                 SetBindings();
+                DrawGraphics();
             }
         }
 
@@ -99,6 +103,7 @@ namespace WPF_UI
             vData.sd = new SplineData(vData.rd, new double[] { (double)vData.LDer, (double)vData.RDer }, (int)vData.NmSplineNodes);
             vData.sd.Interpolate();
             SetBindings();
+            DrawGraphics();
         }
 
         private void SetBindings()
@@ -236,6 +241,47 @@ namespace WPF_UI
         private void MenuSave_Initialized(object sender, EventArgs e)
         {
             MenuSave.Command = ApplicationCommands.Save;
+        }
+
+        public void DrawGraphics()
+        {
+            var mdl = new PlotModel();
+            mdl.Title = "Function interpolation";
+            mdl.Series.Clear();
+
+            //drawing raw data points
+            OxyColor color = OxyColors.DeepPink;
+            LineSeries lineSeries = new LineSeries();
+            for (int i = 0; i < vData.rd.NumNodes; i++)
+                lineSeries.Points.Add(new DataPoint(vData.rd.NodeCoords[i], vData.rd.NodeValues[i]));
+
+            lineSeries.Title = "Raw data points";
+            lineSeries.Color = color;
+            lineSeries.LineStyle = LineStyle.None;
+            lineSeries.MarkerType = MarkerType.Circle;
+            lineSeries.MarkerSize = 4;
+            lineSeries.MarkerStroke = color;
+            lineSeries.MarkerFill = color;
+
+            Legend leg = new Legend();
+            mdl.Legends.Add(leg);
+            mdl.Series.Add(lineSeries);
+
+            //drawing spline points
+            color = OxyColors.Aqua;
+            LineSeries lineSeries1 = new LineSeries();
+            for (int i = 0; i < vData.NmSplineNodes; i++)
+            {
+                lineSeries1.Points.Add(new DataPoint(vData.sd.Items[i].Coord, vData.sd.Items[i].Values[0]));
+            }
+
+            lineSeries1.Title = "Spline points";
+            lineSeries1.Color = color;
+            lineSeries1.MarkerSize = 4;
+
+            mdl.Series.Add(lineSeries1);
+
+            plotModel.Model = mdl;
         }
     }
     public class RegexConverter : IValueConverter

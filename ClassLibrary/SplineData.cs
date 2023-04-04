@@ -64,7 +64,7 @@ namespace ClassLibrary
 
             try
             {
-                CubeInterpolate(nx, ny, Data.IsUniform ? new double[] { Data.EndsCoords[0], Data.EndsCoords[1] } : coords, y, scoeff, nsite, /*Data.IsUniform ?*/ new double[] { site[0], site[nsite-1] }/* : site*/, 3, new int[] { 1, 1, 1 }, result, ref ret, new double[] { site[0], site[site.Length-1] }, integral, EdgeDerivs, Data.IsUniform);
+                CubeInterpolate(nx, ny, Data.IsUniform ? new double[] { Data.EndsCoords[0], Data.EndsCoords[1] } : coords, y, scoeff, nsite, Data.IsUniform ? new double[] { site[0], site[nsite-1] } : site, 3, new int[] { 1, 1, 1 }, result, ref ret, new double[] { site[0], site[site.Length-1] }, integral, EdgeDerivs, Data.IsUniform);
                 Integral = integral[0];
                 for (int i = 0; i < result.Length; ++i)
                 {
