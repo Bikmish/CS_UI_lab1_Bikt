@@ -33,9 +33,10 @@ namespace ClassLibrary
             int nsite = NumNodes;
 
             double[] site = new double[nsite];
-            var delta = (Data.EndsCoords[1] - Data.EndsCoords[0]) / ((nx - 1) == 0 ? 1 : nx - 1);
+            var delta = (Data.EndsCoords[1] - Data.EndsCoords[0]) / ((nsite - 1) == 0 ? 1 : nsite - 1);
             for (int i = 0; i < nsite; ++i)
-                site[i] = i < nx ? Data.NodeCoords[i] : (Data.IsUniform ? Data.EndsCoords[0] + i * delta : Data.EndsCoords[0] + ((i == 0 || i == nx - 1) ? i : i - new Random().NextDouble()) * delta);
+                site[i] = Data.EndsCoords[0] + i * delta;
+                //site[i] = i < nx ? Data.NodeCoords[i] : (Data.IsUniform ? Data.EndsCoords[0] + i * delta : Data.EndsCoords[0] + ((i == 0 || i == nx - 1) ? i : i - new Random().NextDouble()) * delta);
 
             double[] coords = new double[nx];
             double[] y = new double[ny * nx];
@@ -63,7 +64,7 @@ namespace ClassLibrary
 
             try
             {
-                CubeInterpolate(nx, ny, Data.IsUniform ? new double[] { Data.EndsCoords[0], Data.EndsCoords[1] } : coords, y, scoeff, nsite, Data.IsUniform ? new double[] { site[0], site[nsite-1] } : site, 3, new int[] { 1, 1, 1 }, result, ref ret, Data.EndsCoords, integral, EdgeDerivs, Data.IsUniform);
+                CubeInterpolate(nx, ny, Data.IsUniform ? new double[] { Data.EndsCoords[0], Data.EndsCoords[1] } : coords, y, scoeff, nsite, /*Data.IsUniform ?*/ new double[] { site[0], site[nsite-1] }/* : site*/, 3, new int[] { 1, 1, 1 }, result, ref ret, new double[] { site[0], site[site.Length-1] }, integral, EdgeDerivs, Data.IsUniform);
                 Integral = integral[0];
                 for (int i = 0; i < result.Length; ++i)
                 {

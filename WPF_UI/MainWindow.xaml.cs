@@ -27,12 +27,18 @@ namespace WPF_UI
         public string IntegralValue { get=>vData?.sd?.Integral.ToString() ?? ""; }
         public List<SplineDataItem> SplineItems { get => vData?.sd?.Items; }
         public List<String> RawItems { get; }
+        public static RoutedCommand ExecuteFromControlsCommand = new RoutedCommand("ExecuteFromControls", typeof(WPF_UI.MainWindow));
+        public static RoutedCommand ExecuteFromFileCommand = new RoutedCommand("ExecuteFromFile", typeof(WPF_UI.MainWindow));
         public MainWindow()
         {
             this.DataContext = this;
             RawItems = new();
             vData = new();
             InitializeComponent();
+
+            this.CommandBindings.Add(new CommandBinding(ExecuteFromControlsCommand, execControls_Click, CanExecuteFromControlsCommandHandler));
+            this.CommandBindings.Add(new CommandBinding(ExecuteFromFileCommand, ExecuteFromFileHandler, CanExecuteFromFileCommandHandler));
+            this.CommandBindings.Add(new CommandBinding(ApplicationCommands.Save, Save_Click, CanSaveCommandHandler));
         }
 
         private void execControls_Click(object sender, RoutedEventArgs e)
@@ -48,6 +54,53 @@ namespace WPF_UI
                 SetBindings();
             }
         }
+
+        private void CanExecuteFromControlsCommandHandler(object sender, CanExecuteRoutedEventArgs e)
+        {
+            if (grid != null)
+            {
+                foreach (FrameworkElement child in grid.Children)
+                {
+                    if (Validation.GetHasError(child))
+                    {
+                        e.CanExecute = false;
+                        return;
+                    }
+                    e.CanExecute = true;
+                }
+            }
+            else e.CanExecute = false;
+        }
+
+        private void CanExecuteFromFileCommandHandler(object sender, CanExecuteRoutedEventArgs e)
+        {
+            if (vData.rd != null)
+            {
+                if (vData.rd.NumNodes < 2 || vData.rd.EndsCoords[0] >= vData.rd.EndsCoords[1] || vData.NmSplineNodes == null || vData.LDer == null || vData.RDer == null)
+                    e.CanExecute = false;
+                else
+                    e.CanExecute = true;
+            }
+            else if (vData.NmSplineNodes == null || vData.LDer == null || vData.RDer == null)
+                e.CanExecute = false;
+            else
+                e.CanExecute = true;
+        }
+
+        private void execFile_Click(object sender, RoutedEventArgs e)
+        {
+            Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
+            if ((bool)dlg.ShowDialog())
+                vData.Load(dlg.FileName);
+        }
+
+        private void ExecuteFromFileHandler(object sender, RoutedEventArgs e)
+        {
+            vData.sd = new SplineData(vData.rd, new double[] { (double)vData.LDer, (double)vData.RDer }, (int)vData.NmSplineNodes);
+            vData.sd.Interpolate();
+            SetBindings();
+        }
+
         private void SetBindings()
         {
             RawItems.Clear();
@@ -71,13 +124,27 @@ namespace WPF_UI
                 MessageBox.Show("Saving failed!");
             }
         }
+
+        private void CanSaveCommandHandler(object sender, CanExecuteRoutedEventArgs e)
+        {
+            if (vData.rd != null)
+            {
+                if (vData.rd.NumNodes < 2 || vData.rd.EndsCoords[0] >= vData.rd.EndsCoords[1])
+                    e.CanExecute = false;
+                else
+                    e.CanExecute = true;
+            }
+            else
+                e.CanExecute = false;
+        }
+
         private void OpenAndExec_Click(object sender, RoutedEventArgs e)
         {
             Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
             if ((bool)dlg.ShowDialog())
             {
-                vData.Load(dlg.FileName);
-                if (vData.NmSplineNodes == null || vData.LDer == null || vData.RDer == null)
+                bool success = vData.Load(dlg.FileName);
+                if (vData.NmSplineNodes == null || vData.LDer == null || vData.RDer == null || !success)
                     MessageBox.Show("Enter correct contorls!");
                 else
                 {
@@ -93,6 +160,7 @@ namespace WPF_UI
             var binding = new Binding("vData.Ends");
             binding.Mode = BindingMode.OneWayToSource;
             binding.Converter = new RegexConverter(@"[0-9]+(\.[0-9]+)?", 2);
+            binding.ValidatesOnDataErrors = true;
             intBorders_val.SetBinding(TextBox.TextProperty, binding);
         }
 
@@ -101,6 +169,7 @@ namespace WPF_UI
             var binding = new Binding("vData.NmNodes");
             binding.Mode = BindingMode.OneWayToSource;
             binding.Converter = new RegexConverter(@"-?\d+", 1);
+            binding.ValidatesOnDataErrors = true;
             numNodes_val.SetBinding(TextBox.TextProperty, binding);
         }
 
@@ -109,6 +178,7 @@ namespace WPF_UI
             var binding = new Binding("vData.NmSplineNodes");
             binding.Mode = BindingMode.OneWayToSource;
             binding.Converter = new RegexConverter(@"-?\d+", 1);
+            binding.ValidatesOnDataErrors = true;
             numSplineNodes_val.SetBinding(TextBox.TextProperty, binding);
         }
 
@@ -136,6 +206,36 @@ namespace WPF_UI
             binding.Mode = BindingMode.OneWayToSource;
             binding.Converter = new RegexConverter(@"[0-9]+(\.[0-9]+)?", 1);
             rightDer_val.SetBinding(TextBox.TextProperty, binding);
+        }
+
+        private void execControls_Initialized(object sender, EventArgs e)
+        {
+            execControls.Command = ExecuteFromControlsCommand;
+        }        
+        
+        private void MenuExecControls_Initialized(object sender, EventArgs e)
+        {
+            MenuExecFromControls.Command = ExecuteFromControlsCommand;
+        }
+
+        private void execFile_Initialized(object sender, EventArgs e)
+        {
+            execFile.Command = ExecuteFromFileCommand;
+        }        
+        
+        private void MenuExecFile_Initialized(object sender, EventArgs e)
+        {
+            MenuExecFromFile.Command = ExecuteFromFileCommand;
+        }
+
+        private void save_Initialized(object sender, EventArgs e)
+        {
+            save.Command = ApplicationCommands.Save;
+        }        
+        
+        private void MenuSave_Initialized(object sender, EventArgs e)
+        {
+            MenuSave.Command = ApplicationCommands.Save;
         }
     }
     public class RegexConverter : IValueConverter

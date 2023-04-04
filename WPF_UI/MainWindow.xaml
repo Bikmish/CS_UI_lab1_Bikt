@@ -41,9 +41,9 @@
 
         <Label Content="Derivative on right segment border:" Grid.Column="0" Margin="18,233,52,0" VerticalAlignment="Top" Grid.Row="1"/>
         <TextBox x:Name="rightDer_val" Grid.Column="0" Margin="18,258,52,0" TextWrapping="Wrap" Text="1" VerticalAlignment="Top" Grid.Row="1" Initialized="rightDer_val_Initialized"/>
-        <Button x:Name="execControls" Content="Execute (RawData from controls)" Grid.Column="0" Margin="18,294,18,0" VerticalAlignment="Top" Click="execControls_Click" Grid.Row="1"/>
-        <Button x:Name="execFile" Content="Execute (RawData from file)" Grid.Column="0" Margin="18,319,18,0" VerticalAlignment="Top" Click="OpenAndExec_Click" Grid.Row="1"/>
-        <Button x:Name="save" Content="Save" Grid.Column="0" Margin="18,344,18,0" VerticalAlignment="Top" Click="Save_Click" Grid.Row="1"/>
+        <Button x:Name="execControls" Content="Execute (RawData from controls)" Grid.Column="0" Margin="18,294,18,0" VerticalAlignment="Top" Grid.Row="1" Initialized="execControls_Initialized"/>
+        <Button x:Name="execFile" Content="Execute (RawData from file)" Grid.Column="0" Margin="18,319,18,0" VerticalAlignment="Top" Grid.Row="1" Click="execFile_Click" Initialized="execFile_Initialized"/>
+        <Button x:Name="save" Content="Save" Grid.Column="0" Margin="18,344,18,0" VerticalAlignment="Top" Click="Save_Click" Initialized="save_Initialized" Grid.Row="1"/>
 
         <ListBox x:Name="rdList" Grid.Column="1" Margin="10,10,10,380"  d:ItemsSource="{d:SampleData ItemCount=5}" Grid.RowSpan="2"/>
         <ListBox x:Name="sdList" Grid.Column="1" Margin="10,246,10,89"  d:ItemsSource="{d:SampleData ItemCount=5}" Grid.Row="1">
@@ -61,12 +61,12 @@
         <Label Grid.Column="1" Content="Node info: " HorizontalAlignment="Left" Margin="35,151,0,0" VerticalAlignment="Top" Grid.Row="1"/>
         <Menu>
             <MenuItem Cursor="AppStarting" Header="File">
-                <MenuItem Header="Save" Click="Save_Click"/>
+                <MenuItem Name="MenuSave" Header="Save" Click="Save_Click" Initialized="MenuSave_Initialized"/>
             </MenuItem>
 
             <MenuItem Header="Execute">
-                <MenuItem Header="RawData from controls" Click="execControls_Click"/>
-                <MenuItem Header="RawData from file" Click="OpenAndExec_Click"/>
+                <MenuItem Name="MenuExecFromControls" Header="RawData from controls" Initialized="MenuExecControls_Initialized"/>
+                <MenuItem Name="MenuExecFromFile" Header="RawData from file" Click="execFile_Click" Initialized="MenuExecFile_Initialized"/>
             </MenuItem>
         </Menu>
 

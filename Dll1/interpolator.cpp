@@ -10,6 +10,7 @@ void CubeInterpolate(MKL_INT nx, MKL_INT ny, double* x, double* y, double* scoef
 		DFTaskPtr task;
 		const double* intLedge = &intEdges[0];
 		const double* intRedge = &intEdges[1];
+		isUniform = true;
 		status = dfdNewTask1D(&task, nx, x, isUniform ? DF_UNIFORM_PARTITION : DF_NON_UNIFORM_PARTITION, ny, y, DF_MATRIX_STORAGE_ROWS);
 		if (status != DF_STATUS_OK) { ret = -1; return; }
 		status = dfdEditPPSpline1D(task, DF_PP_CUBIC, DF_PP_NATURAL, DF_BC_1ST_LEFT_DER | DF_BC_1ST_RIGHT_DER, edgeDerivs, DF_NO_IC, NULL, scoeff, DF_NO_HINT);
