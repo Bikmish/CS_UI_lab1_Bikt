@@ -45,7 +45,7 @@
         <TextBox x:Name="rightDer_val" Grid.Column="0" Margin="18,258,52,0" TextWrapping="Wrap" Text="1" VerticalAlignment="Top" Grid.Row="1" Initialized="rightDer_val_Initialized" Height="18"/>
         <Button x:Name="execControls" Content="Execute (RawData from controls)" Grid.Column="0" Margin="18,294,18,0" VerticalAlignment="Top" Grid.Row="1" Initialized="execControls_Initialized" Height="20"/>
         <Button x:Name="execFile" Content="Execute (RawData from file)" Grid.Column="0" Margin="18,319,18,0" VerticalAlignment="Top" Grid.Row="1" Click="execFile_Click" Initialized="execFile_Initialized" Height="20"/>
-        <Button x:Name="save" Content="Save" Grid.Column="0" Margin="18,344,18,0" VerticalAlignment="Top" Click="Save_Click" Initialized="save_Initialized" Grid.Row="1" Height="20"/>
+        <Button x:Name="save" Content="Save" Grid.Column="0" Margin="18,344,18,0" VerticalAlignment="Top" Initialized="save_Initialized" Grid.Row="1" Height="20"/>
 
         <ListBox x:Name="rdList" Grid.Column="1" Margin="10,10,114,380"  d:ItemsSource="{d:SampleData ItemCount=5}" Grid.RowSpan="2"/>
         <ListBox x:Name="sdList" Grid.Column="1" Margin="10,246,114,89"  d:ItemsSource="{d:SampleData ItemCount=5}" Grid.Row="1">

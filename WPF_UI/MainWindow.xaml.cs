@@ -250,36 +250,32 @@ namespace WPF_UI
             mdl.Series.Clear();
 
             //drawing raw data points
-            OxyColor color = OxyColors.DeepPink;
-            LineSeries lineSeries = new LineSeries();
+            OxyColor color = OxyColors.DarkTurquoise;
+            LineSeries ls = new LineSeries();
             for (int i = 0; i < vData.rd.NumNodes; i++)
-                lineSeries.Points.Add(new DataPoint(vData.rd.NodeCoords[i], vData.rd.NodeValues[i]));
+                ls.Points.Add(new DataPoint(vData.rd.NodeCoords[i], vData.rd.NodeValues[i]));
 
-            lineSeries.Title = "Raw data points";
-            lineSeries.Color = color;
-            lineSeries.LineStyle = LineStyle.None;
-            lineSeries.MarkerType = MarkerType.Circle;
-            lineSeries.MarkerSize = 4;
-            lineSeries.MarkerStroke = color;
-            lineSeries.MarkerFill = color;
+            ls.Title = "Raw data points";
+            ls.Color = color;
+            ls.LineStyle = LineStyle.None;
+            ls.MarkerType = MarkerType.Circle;
+            ls.MarkerSize = 5;
+            ls.MarkerStroke = color;
+            ls.MarkerFill = color;
 
             Legend leg = new Legend();
             mdl.Legends.Add(leg);
-            mdl.Series.Add(lineSeries);
+            mdl.Series.Add(ls);
 
-            //drawing spline points
-            color = OxyColors.Aqua;
-            LineSeries lineSeries1 = new LineSeries();
+            //drawing spline
+            color = OxyColors.Purple;
+            LineSeries ls1 = new LineSeries();
             for (int i = 0; i < vData.NmSplineNodes; i++)
-            {
-                lineSeries1.Points.Add(new DataPoint(vData.sd.Items[i].Coord, vData.sd.Items[i].Values[0]));
-            }
+                ls1.Points.Add(new DataPoint(vData.sd.Items[i].Coord, vData.sd.Items[i].Values[0]));
 
-            lineSeries1.Title = "Spline points";
-            lineSeries1.Color = color;
-            lineSeries1.MarkerSize = 4;
-
-            mdl.Series.Add(lineSeries1);
+            ls1.Title = "Spline";
+            ls1.Color = color;
+            mdl.Series.Add(ls1);
 
             plotModel.Model = mdl;
         }

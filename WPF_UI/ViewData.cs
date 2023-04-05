@@ -57,7 +57,7 @@ namespace WPF_UI
                             error = "The number of nodes must be greater than or equal to 2!";
                         break;
                     case "NmSplineNodes":
-                        if (NmSplineNodes == null || NmSplineNodes < 2)
+                        if (NmSplineNodes == null || NmSplineNodes < 3)
                             error = "The number of spline nodes must be greater than or equal to 2!";
                         break;
                     case "Ends":
