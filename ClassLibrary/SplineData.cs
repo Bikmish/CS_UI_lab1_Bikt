@@ -14,7 +14,7 @@ namespace ClassLibrary
         public double[] Values { get; set; }
         public SplineDataItem(double coord, double[] vals) => (Coord, Values) = (coord, vals);
         public string ToString(string format) => $"x = {Coord}\n\tvalue = {Values[0]}\n\tderiv1 = {Values[1]}\n\tderiv2 = {Values[2]}";
-        public override string ToString() => $"x = {Coord}\n\tvalue = {Values[0]}\n\tderiv1 = {Values[1]}\n\tderiv2 = {Values[2]}";
+        public override string ToString() => Values != null ? $"x = {Coord:N2}\n\tvalue = {Values[0]:N2}\n\tderiv1 = {Values[1]:N2}\n\tderiv2 = {Values[2]:N2}" : "No item selected";
         public string Info => $"x = {Coord:N2}\n\tvalue = {Values[0]:N2}\n\tderiv1 = {Values[1]:N2}\n\tderiv2 = {Values[2]:N2}";
     }
 

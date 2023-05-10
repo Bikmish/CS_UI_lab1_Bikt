@@ -164,7 +164,7 @@ namespace WPF_UI
         {
             var binding = new Binding("vData.Ends");
             binding.Mode = BindingMode.OneWayToSource;
-            binding.Converter = new RegexConverter(@"[0-9]+(\.[0-9]+)?", 2);
+            binding.Converter = new RegexConverter(@"-?[0-9]+(\.[0-9]+)?", 2);
             binding.ValidatesOnDataErrors = true;
             intBorders_val.SetBinding(TextBox.TextProperty, binding);
         }
@@ -201,7 +201,7 @@ namespace WPF_UI
         {
             var binding = new Binding("vData.LDer");
             binding.Mode = BindingMode.OneWayToSource;
-            binding.Converter = new RegexConverter(@"[0-9]+(\.[0-9]+)?", 1);
+            binding.Converter = new RegexConverter(@"-?[0-9]+(\.[0-9]+)?", 1);
             leftDer_val.SetBinding(TextBox.TextProperty, binding);
         }
 
@@ -209,7 +209,7 @@ namespace WPF_UI
         {
             var binding = new Binding("vData.RDer");
             binding.Mode = BindingMode.OneWayToSource;
-            binding.Converter = new RegexConverter(@"[0-9]+(\.[0-9]+)?", 1);
+            binding.Converter = new RegexConverter(@"-?[0-9]+(\.[0-9]+)?", 1);
             rightDer_val.SetBinding(TextBox.TextProperty, binding);
         }
 

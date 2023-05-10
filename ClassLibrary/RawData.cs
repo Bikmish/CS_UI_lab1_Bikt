@@ -56,7 +56,6 @@ namespace ClassLibrary
             }
             catch (Exception e)
             {
-                Console.WriteLine($"Saving error! {e}\n");
                 return false;
             }
             return true;
@@ -91,7 +90,6 @@ namespace ClassLibrary
             }
             catch (Exception e)
             {
-                Console.WriteLine($"Loading error! {e}\n");
                 return false;
             }
             return true;
