@@ -67,7 +67,7 @@ namespace InterpolatorViewModel
         {
             rd = new RawData();
             var path = uiServices.GetFileName();
-            if (path != String.Empty && RawData.Load(path, rd))
+            if (path != String.Empty && path != null && RawData.Load(path, rd))
             {
                 sd = new SplineData(rd, new double[] { (double)LDer, (double)RDer }, (int)NmSplineNodes);
                 CalculateAndShow();
@@ -79,7 +79,7 @@ namespace InterpolatorViewModel
         private void SaveRawData(object sender)
         {
             var path = uiServices.ChoosePath();
-            if(path != String.Empty && rd.Save(path))
+            if(path != String.Empty && path != null && rd.Save(path))
                 uiServices.ReportError("Saved successfully!");
             else
                 uiServices.ReportError("Saving failed.");

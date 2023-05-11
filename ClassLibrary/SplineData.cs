@@ -91,7 +91,6 @@ namespace ClassLibrary
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
                 return false;
             }
         }
