@@ -14,11 +14,10 @@ namespace InterpolatorViewModel
 
     public interface IGraphicProvider
     {
-        object PlotModel { get; set; }
-        void DrawGraphics(double[] rdCoords, double[] rdValues, double[] sdCoords, double[] sdValues);
+        object DrawGraphics(double[] rdCoords, double[] rdValues, double[] sdCoords, double[] sdValues);
     }
 
-    public class MainViewModel: ViewModelBase, IDataErrorInfo
+    public class MainViewModel : ViewModelBase, IDataErrorInfo
     {
         public double[] Ends { get; set; }
         public int? NmNodes { get; set; }
@@ -29,15 +28,15 @@ namespace InterpolatorViewModel
         public double? RDer { get; set; }
         public RawData? rd;
         public SplineData? sd;
-        public List<String> RawItems 
-        { 
-            get 
+        public List<String> RawItems
+        {
+            get
             {
-                var rItems = new List<string>() {  };
+                var rItems = new List<string>() { };
                 for (int i = 0; i < (rd?.NodeCoords.Length ?? 0); ++i)
                     rItems.Add($"x = {rd.NodeCoords[i]:N2}, value = {rd.NodeValues[i]:N2}");
                 return rItems;
-            } 
+            }
         }
         public List<SplineDataItem> SplineItems { get => sd?.Items ?? new List<SplineDataItem>(); }
         public SplineDataItem? SelectedSplineItem { set { SelectedSplineItemInfo = value != null ? value.ToString() : "No spline item selected."; RaisePropertyChanged(nameof(SelectedSplineItemInfo)); } }
@@ -48,7 +47,7 @@ namespace InterpolatorViewModel
         public ICommand SaveCommand { get; private set; }
         private readonly IUIServices uiServices;
         private readonly IGraphicProvider graphicProvider;
-        public object PlotModel => graphicProvider.PlotModel;
+        public object PlotModel { get; set; }
         public MainViewModel(IUIServices uiServices, IGraphicProvider graphicProvider)
         {
             (this.uiServices, this.graphicProvider) = (uiServices, graphicProvider);
@@ -97,7 +96,7 @@ namespace InterpolatorViewModel
             for (int i = 0; i < (int)NmSplineNodes; ++i)
                 (sdCoords[i], sdVals[i]) = (sd.Items[i].Coord, sd.Items[i].Values[0]);
 
-            graphicProvider.DrawGraphics(rd.NodeCoords, rd.NodeValues, sdCoords, sdVals);
+            PlotModel = graphicProvider.DrawGraphics(rd.NodeCoords, rd.NodeValues, sdCoords, sdVals);
             RaisePropertyChanged(nameof(SplineItems));
             RaisePropertyChanged(nameof(RawItems));
             RaisePropertyChanged(nameof(IntegralValue));

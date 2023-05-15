@@ -35,8 +35,7 @@ namespace InterpolatorView
 
     public class GraphicProvider : IGraphicProvider
     {
-        public object PlotModel { get; set; }
-        public void DrawGraphics(double[] rdCoords, double[] rdValues, double[] sdCoords, double[] sdValues)
+        public object DrawGraphics(double[] rdCoords, double[] rdValues, double[] sdCoords, double[] sdValues)
         {
             var mdl = new PlotModel();
             mdl.Title = "Function interpolation";
@@ -70,7 +69,7 @@ namespace InterpolatorView
             ls1.Color = color;
             mdl.Series.Add(ls1);
 
-            PlotModel = mdl;
+            return mdl;
         }
     }
 
